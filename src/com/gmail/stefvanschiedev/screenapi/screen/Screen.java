@@ -11,6 +11,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapFont;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
@@ -95,11 +96,18 @@ public class Screen {
 		((Renderer) views[(int) (x / 128)][(int) (y / 128)].getRenderers().get(1)).drawText(x - (((int) (x / 128)) * 128), y - (((int) (y / 128)) * 128), font, text);
 	}
 	
-	public void drawImage(int x, int y, Image image) {
-		if (x < 0 || x > 1536 || y < 0 || y > 896)
+	@SuppressWarnings("deprecation")
+	public void drawImage(int startX, int startY, Image image) {
+		if (startX < 0 || startX > 1536 || startY < 0 || startY > 896)
 			return;
 		
-		((Renderer) views[(int) (x / 128)][(int) (y / 128)].getRenderers().get(1)).drawImage(x - (((int) (x / 128)) * 128), y - (((int) (y / 128)) * 128), image);
+		byte bytes[] = MapPalette.imageToBytes(image);
+		for (int x = 0; x < image.getWidth(null); x++) {
+			for (int y = 0; y < image.getHeight(null); y++) {
+				setColor(bytes[y * image.getWidth(null) + x]);
+				drawPixel(startX + x, startY + y);
+			}
+		}
 	}
 	
 	public void drawRect(int startX, int startY, int width, int height) {

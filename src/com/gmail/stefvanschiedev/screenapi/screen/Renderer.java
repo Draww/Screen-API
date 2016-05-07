@@ -13,7 +13,6 @@ public class Renderer extends MapRenderer {
 	
 	private List<Pixel> pixelsToDraw = new ArrayList<>();
 	private List<Text> textsToDraw = new ArrayList<>();
-	private List<Image> imagesToDraw = new ArrayList<>();
 	
 	@Override
 	public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
@@ -28,12 +27,6 @@ public class Renderer extends MapRenderer {
 		}
 		
 		textsToDraw.clear();
-		
-		for (Image image : imagesToDraw) {
-			mapCanvas.drawImage(image.getX(), image.getY(), image.getImage());
-		}
-
-		imagesToDraw.clear();
 	}
 	
 	public void setPixel(int x, int y, byte color) {
@@ -42,9 +35,5 @@ public class Renderer extends MapRenderer {
 	
 	public void drawText(int x, int y, MapFont font, String text) {
 		textsToDraw.add(new Text(x, y, font, text));
-	}
-	
-	public void drawImage(int x, int y, java.awt.Image image) {
-		imagesToDraw.add(new Image(x, y, image));
 	}
 }

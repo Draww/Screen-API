@@ -1,5 +1,5 @@
 name: Screen_API
-version: 0.0.1
+version: 0.0.2
 main: com.gmail.stefvanschiedev.screenapi.Main
 
 commands:
