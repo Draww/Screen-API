@@ -17,7 +17,8 @@ public class Renderer extends MapRenderer {
 	@Override
 	public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
 		for (Pixel pixel : pixelsToDraw) {
-			mapCanvas.setPixel(pixel.getX(), pixel.getY(), pixel.getColor());
+			if (pixel.getColor() != Color.TRANSPARENT)
+				mapCanvas.setPixel(pixel.getX(), pixel.getY(), pixel.getColor());
 		}
 		
 		pixelsToDraw.clear();

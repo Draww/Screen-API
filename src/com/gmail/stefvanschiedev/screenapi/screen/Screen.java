@@ -11,6 +11,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapFont;
+import org.bukkit.map.MapFont.CharacterSprite;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
@@ -92,8 +93,43 @@ public class Screen {
 	public void drawText(int x, int y, String text) {
 		if (x < 0 || x > 1536 || y < 0 || y > 896)
 			return;
+		
+		int xStart = x;
+		
+		if (!font.isValid(text))
+			return;
+		
+		for (int i = 0; i < text.length(); i++) {
+			char ch = text.charAt(i);
+					
+			if (ch == '\n') {
+				x = xStart;
+				y += font.getHeight() + 1;
+				continue;
+			}
+			
+			if (ch == '\247') {
+				int j = text.indexOf(';', i);
+				if (j >= 0) {
+					try {
+						color = Byte.parseByte(text.substring(i + 1, j));
+						i = j;
+						continue;
+					} catch (NumberFormatException e) {}
+				}
+			}
+					
+			CharacterSprite sprite = font.getChar(text.charAt(i));
+					
+			for (int r = 0; r < font.getHeight(); r++) {
+				for (int c = 0; c < sprite.getWidth(); c++) {
+					if (sprite.get(r, c))
+						drawPixel(x + c, y + r);
+				}
+			}
 
-		((Renderer) views[(int) (x / 128)][(int) (y / 128)].getRenderers().get(1)).drawText(x - (((int) (x / 128)) * 128), y - (((int) (y / 128)) * 128), font, text);
+			x += sprite.getWidth() + 1;
+		}
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -190,6 +226,18 @@ public class Screen {
 		//needs work
 		System.out.println("Drawing line from " + xs[0] + " " + ys[0] + " to " + xs[xs.length - 1] + " " + ys[ys.length - 1]);
 		drawLine(xs[0], ys[0], xs[xs.length - 1], ys[ys.length - 1]);
+	}
+	
+	public void drawCircle(int x, int y, int diameter) {
+		int radius = diameter / 2;
+		int centerX = x + radius;
+		int centerY = y + radius;
+		
+		for (int degree = 0; degree < 360; degree++) {
+			double radians = Math.toRadians(degree);
+			
+			drawPixel((int) (centerX + (Math.cos(radians) * radius)), (int) (centerY + (Math.sin(radians) * radius)));
+		}
 	}
 	
 	public void fillRect(int startX, int startY, int width, int height) {
