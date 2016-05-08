@@ -111,15 +111,85 @@ public class Screen {
 	}
 	
 	public void drawRect(int startX, int startY, int width, int height) {
-		for (int x = startX; x < startX + width; x++) {
-			drawPixel(x, startY);
-			drawPixel(x, startY + height);
+		drawLine(startX, startY, startX + width, startY);
+		drawLine(startX, startY, startX, startY + height);
+		drawLine(startX, startY + height, startX + width, startY + height);
+		drawLine(startX + width, startY, startX + width, startY + height);
+	}
+	
+	/*
+	 * From: https://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Method
+	 */
+	public void drawLine(int startX, int startY, int endX, int endY) {
+		if (startX > endX && startY > endY) {
+			int startXCopy = startX;
+			startX = endX;
+			endX = startXCopy;
+			
+			int startYCopy = startY;
+			startY = endY;
+			endY = startYCopy;
 		}
 		
-		for (int y = startY; y < startY + height; y++) {
-			drawPixel(startX, y);
-			drawPixel(startX + width, y);
+		double deltaX = endX - startX;
+		double deltaY = endY - startY;
+		double error = -1;
+		double deltaError = Math.abs(deltaY / deltaX);
+
+		if (deltaX == 0) {
+			for (int y = startY; y < endY; y++)
+				drawPixel(startX, y);
 		}
+		
+		if (deltaY == 0) {
+			for (int x = startX; x < endX; x++)
+				drawPixel(x, startY);
+		}
+		
+		if (deltaX >= deltaY) {
+			int y = startY;
+			int yDirection = endY > startY ? 1 : -1;
+			
+			for (int x = startX; x < endX - 1; x++) {
+				error += deltaError;
+			
+				if (error >= 0) {
+					y += yDirection;
+					error--;
+				}
+				
+				drawPixel(x, y);
+			}
+		} else if (deltaY > deltaX) {
+			int x = startX;
+			int xDirection = endX > startX ? 1 : -1;
+			
+			for (int y = startY; y < endY - 1; y++) {
+				error += deltaError;
+			
+				if (error >= 0) {
+					x += xDirection;
+					error--;
+				}
+				
+				drawPixel(x, y);
+			}
+		}
+	}
+	
+	@Deprecated
+	public void drawPolygon(int[] xs, int[] ys) {
+		if (xs.length != ys.length)
+			return;
+		
+		for (int i = 1; i < xs.length; i++) {
+			System.out.println("Drawing line " + i + " with locations " + xs[i - 1] + " " + ys[i - 1] + " " + xs[i] + " " + ys[i]);
+			drawLine(xs[i - 1], ys[i - 1], xs[i], ys[i]);
+		}
+		
+		//needs work
+		System.out.println("Drawing line from " + xs[0] + " " + ys[0] + " to " + xs[xs.length - 1] + " " + ys[ys.length - 1]);
+		drawLine(xs[0], ys[0], xs[xs.length - 1], ys[ys.length - 1]);
 	}
 	
 	public void fillRect(int startX, int startY, int width, int height) {
