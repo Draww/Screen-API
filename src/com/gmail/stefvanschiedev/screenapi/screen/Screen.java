@@ -30,7 +30,7 @@ public class Screen {
 		this.maps = new ItemFrame[12][7];
 		this.views = new MapView[12][7];
 		this.player = player;
-		this.color = Color.TRANSPARENT;
+		this.color = Color.WHITE;
 		this.font = MinecraftFont.Font;
 		
 		//create mapviews
@@ -50,6 +50,12 @@ public class Screen {
 	
 	@SuppressWarnings("deprecation")
 	public void show() {
+		//fov 68 
+		//fov 69 .0
+		//fov 70 .13
+		//fov 71 .155
+		//fov 72 .25
+		
 		player.teleport(new Location(player.getWorld(), player.getLocation().getBlockX() + 1, player.getLocation().getBlockY(), player.getLocation().getBlockZ() + .13, 0, 0));
 		
 		for (int x = 0; x < 12; x++) {

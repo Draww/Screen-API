@@ -1,3 +1,7 @@
 name: Screen_API
 version: 0.0.4
 main: com.gmail.stefvanschiedev.screenapi.Main
+
+commands:
+  create:
+    description: Create a new screen
